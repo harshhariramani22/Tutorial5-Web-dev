@@ -4,6 +4,7 @@ var uuid = require('uuid');
 const Joi = require('@hapi/joi');
 const router = express.Router();
 const users = require('../data/userlist');
+const { id } = require("@hapi/joi/lib/base");
 
 
 // Functions for the API requests
@@ -67,11 +68,15 @@ router.get('/users', (req, res) => {
 
 // GET request for specific id
 
-router.get('/user/:uuid',(req,res)=>{
+router.get('/user/:id',(req,res)=>{
     try{
-        let userId = req.params.uuid;
-        const user = searchUser("uuid",userId);
-        res.status(200).json(user);
+        let userId = req.params.id;
+        const user = searchUser(id,userId);
+        console.log(user);
+        res.status(200).json({
+            message:"Hello"
+        });
+        return userId;
     }
     catch(err){
         console.log(err);
