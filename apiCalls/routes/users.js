@@ -14,34 +14,11 @@ const addNewUser = (key, user) => {
     return user;
 }
 
-/*
-const updateUserDetails = (key, value) => {
-    try {
-        let userId = value.uuid;
-        console.log(value);
-        console.log(userId);
-        const user = searchUser("uuid", userId);
-        if (user) {
-            user.firstName = value.firstName;
-            user.email = value.email;
-            return user;
-        }
-    }
-    catch (err) {
-        res.status(406).json({
-            success: false,
-            error: err,
-            message: "User does not Exist with uuid"
-        })
-    }
-}
-*/
-
-const searchUser = (key, value) => {
-    const user_match = userData.find(userData => {
-        return userData[key] === value;
-    })
-    if (!user_match) throw new Error("No user was found");
+const searchUser = (id) => {
+    
+    const user_match = userData.find(user =>user.id === parseInt(id));
+    console.log('USER:',user_match);
+    // if (!user_match) throw new Error("No user was found");
     return user_match;
 }
 
@@ -66,17 +43,26 @@ router.get('/users', (req, res) => {
 })
 
 
-// GET request for specific id
+// GET request to get specific user ID
 
 router.get('/user/:id',(req,res)=>{
     try{
         let userId = req.params.id;
-        const user = searchUser(id,userId);
-        console.log(user);
-        res.status(200).json({
-            message:"Hello"
+    
+        const user = searchUser(userId);
+        if(user){
+        return res.status(200).json({
+            message:user
         });
-        return userId;
+    }else{
+
+        return res.status(404).json({
+            message: "The entered user does not exist",
+            success: false
+        })
+
+    }
+       
     }
     catch(err){
         console.log(err);
@@ -91,6 +77,7 @@ router.get('/user/:id',(req,res)=>{
 // POST request to add new user
 
 router.post('/add', (req, res) => {
+    try{
     const email = req.body.email;
     const id = uuid.v1();
     console.log(req.body);
@@ -124,8 +111,16 @@ router.post('/add', (req, res) => {
         });
 
         const validation = schema.validate(req.body);
-
         return validation;
+    }
+
+    } catch(err){
+        console.log(err);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        })
+
     }
 
 })
@@ -133,9 +128,16 @@ router.post('/add', (req, res) => {
 // PUT request to update user details
 
 router.put('/update/:id', (req, res) => {
+    try{
     var id = req.params.id-1;
 
     const fs = require('fs');
+
+    const validUser = validatePutRequest(req.body);
+    if (validUser.error) {
+        res.status(400).send(validUser.error.details[0].message);
+        return;
+    }
 
     var jsonData = fs.readFileSync("Express.json");
     var data = JSON.parse(jsonData);
@@ -150,6 +152,25 @@ router.put('/update/:id', (req, res) => {
         success: true,
         updatedList: data
     })
+
+    function validatePutRequest(user) {
+        const schema = Joi.object({
+            email: Joi.string().min(1).required(),
+            firstName: Joi.string().min(1).required()
+        });
+
+        const validation = schema.validate(req.body);
+        return validation;
+    }
+
+    } catch(err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        })
+
+    }
     
 })
 
@@ -160,6 +181,7 @@ module.exports = router;
 
 /*
     References:
+
     https://dal.brightspace.com/d2l/le/content/222418/viewContent/3051242/View
     https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js 
     https://github.com/request/request 

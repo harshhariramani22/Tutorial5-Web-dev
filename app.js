@@ -20,14 +20,11 @@ app.use(express.json())
 
 const userRoute = require('./apiCalls/routes/users');
 
-//const rootRoute = '/apiCalls'
-
 app.use( userRoute);
 
 app.use('/',(req,res) => {
     res.send("It works")
 })
-
 
 
 //exporting the app
