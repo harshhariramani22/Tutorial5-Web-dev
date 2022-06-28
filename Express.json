@@ -1,0 +1,17 @@
+[
+  {
+    "email": "William@loki.ca",
+    "firstName": "William",
+    "id": "1"
+  },
+  {
+    "email": "harshh@putty.ca",
+    "firstName": "Harsh",
+    "id": "2"
+  },
+  {
+    "email": "lorem@ipsum.com",
+    "firstName": "Lorem",
+    "id": "3"
+  }
+]
