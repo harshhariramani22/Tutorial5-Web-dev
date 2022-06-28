@@ -20,9 +20,9 @@ app.use(express.json())
 
 const userRoute = require('./apiCalls/routes/users');
 
-const rootRoute = '/apiCalls'
+//const rootRoute = '/apiCalls'
 
-app.use(rootRoute, userRoute);
+app.use( userRoute);
 
 app.use('/',(req,res) => {
     res.send("It works")
