@@ -23,7 +23,7 @@ const userRoute = require('./apiCalls/routes/users');
 app.use( userRoute);
 
 app.use('/',(req,res) => {
-    res.send("It works")
+    res.send("The app is working")
 })
 
 
