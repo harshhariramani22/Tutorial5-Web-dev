@@ -128,6 +128,7 @@ router.post('/add', (req, res) => {
 // PUT request to update user details
 
 router.put('/update/:id', (req, res) => {
+
     try{
     var id = req.params.id-1;
 
@@ -147,16 +148,31 @@ router.put('/update/:id', (req, res) => {
     
     fs.writeFileSync('Express.json', (JSON.stringify(data, null, 2)));
 
+    var flag = true;
+
+    console.log(req.body.email);
+    console.log(req.body.firstName);
+    
+    if(req.body.email===undefined && req.body.firstName===undefined) {
+
+        res.status(400).json({
+            message:"Object cannot be empty",
+            success:false
+        });
+    }
+    else if(flag===true){
     res.status(200).send({
         message: "User details updated successfully",
         success: true,
         updatedList: data
     })
+    }
+
 
     function validatePutRequest(user) {
         const schema = Joi.object({
-            email: Joi.string().min(1).required(),
-            firstName: Joi.string().min(1).required()
+            email: Joi.string().min(1),
+            firstName: Joi.string().min(1)
         });
 
         const validation = schema.validate(req.body);
@@ -171,7 +187,7 @@ router.put('/update/:id', (req, res) => {
         })
 
     }
-    
+
 })
 
 
@@ -187,6 +203,7 @@ module.exports = router;
     https://github.com/request/request 
     https://www.codegrepper.com/code-examples/javascript/add+json+object+to+json+array+javascript
     https://github.com/syedabrar003 
+    https://www.w3schools.com/jsref/jsref_find.asp 
     https://youtu.be/NAhQvthVjhA
     https://stackoverflow.com/questions/57956609/joi-1-default-validate-is-not-a-function 
     https://docs.github.com/en/rest/guides/getting-started-with-the-rest-api 
